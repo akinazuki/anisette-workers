@@ -44,31 +44,38 @@ Sample response:
 ## Install
 
 ```bash
-bun add anisette-workers @lbr77/anisette-js
+bun add github:akinazuki/anisette-workers
 ```
+
+`@lbr77/anisette-js` is pre-bundled into `dist/` — no separate install needed.
 
 ## Prepare 3 binary assets
 
 **① Two Apple Music Android `.so` files**
 
-Grab from `lib/arm64-v8a/`:
+Grab from `lib/arm64-v8a/` of an Apple Music Android APK:
    - `libstoreservicescore.so`
    - `libCoreADI.so`
 
-3. Drop them into your project's `src/` (or anywhere wrangler can import).
+Drop them into your project's `src/` (or anywhere wrangler can import).
 
-**② Extract + patch the anisette WASM**:
+**② Copy the pre-patched anisette WASM**:
 
 ```bash
-# Run these two once per project (bootstrap)
-bunx anisette-extract-wasm src/anisette.wasm
-bunx anisette-patch-wasm src/anisette.wasm
-mv src/anisette.wasm.patched src/anisette.wasm
+cp node_modules/anisette-workers/dist/anisette.wasm src/
 ```
 
-Step 1 extracts the WASM blob that's embedded inside `@lbr77/anisette-js`'s JS file
-into a standalone `.wasm`. Step 2 patches `INITIAL_MEMORY` from 256MB down to 16MB
-(Workers caps a single isolate at 128MB).
+This file is the upstream Emscripten WASM with `INITIAL_MEMORY` patched from 256MB
+down to 16MB (Workers caps a single isolate at 128MB). Already extracted + patched
+at publish time — you don't need to run anything.
+
+> If you ever want to regenerate it yourself (e.g. after an upstream bump),
+> the package also ships the CLIs that produced it:
+> ```bash
+> bunx anisette-extract-wasm src/anisette.wasm    # requires @lbr77/anisette-js installed
+> bunx anisette-patch-wasm   src/anisette.wasm
+> mv src/anisette.wasm.patched src/anisette.wasm
+> ```
 
 ## Configure wrangler.toml
 

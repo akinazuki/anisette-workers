@@ -23,7 +23,7 @@
     "README.md"
   ],
   "scripts": {
-    "build": "rm -rf dist && bun build src/index.ts --target=browser --format=esm --outdir=dist && tsc -p tsconfig.build.json",
+    "build": "rm -rf dist && bun build src/index.ts --target=browser --format=esm --outdir=dist && tsc -p tsconfig.build.json && bun scripts/extract-wasm.mjs dist/anisette.wasm && bun scripts/patch-wasm-memory.mjs dist/anisette.wasm && mv dist/anisette.wasm.patched dist/anisette.wasm",
     "prepack": "bun run build"
   },
   "devDependencies": {
