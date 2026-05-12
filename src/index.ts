@@ -1,7 +1,10 @@
-import { Anisette } from "../node_modules/@lbr77/anisette-js/dist/anisette.js";
-import type { HttpClient } from "../node_modules/@lbr77/anisette-js/dist/http.js";
-// @ts-expect-error
-import RawModuleFactory from "../node_modules/@lbr77/anisette-js/dist/anisette_rs.js";
+// Deep import bypasses @lbr77/anisette-js's main entry (which has a top-level
+// `new URL(import.meta.url)` side effect via wasm-loader.js that crashes on Workers).
+// The package's "exports" map does not expose these — see src/anisette-js-shim.d.ts.
+import { Anisette } from "@lbr77/anisette-js/dist/anisette.js";
+import type { HttpClient } from "@lbr77/anisette-js/dist/http.js";
+// @ts-expect-error — Emscripten generated module, no types ship with the package
+import RawModuleFactory from "@lbr77/anisette-js/dist/anisette_rs.js";
 
 const ModuleFactory = RawModuleFactory as (
   overrides?: Record<string, unknown>,
