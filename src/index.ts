@@ -1,3 +1,4 @@
+/// <reference path="./anisette-js-shim.d.ts" />
 // Deep import bypasses @lbr77/anisette-js's main entry (which has a top-level
 // `new URL(import.meta.url)` side effect via wasm-loader.js that crashes on Workers).
 // The package's "exports" map does not expose these — see src/anisette-js-shim.d.ts.
