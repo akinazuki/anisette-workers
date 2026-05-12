@@ -1,4 +1,9 @@
-declare module "@lbr77/anisette-js/dist/anisette.js" {
+declare module "*/anisette-js/dist/anisette_rs.js" {
+  const factory: (overrides?: Record<string, unknown>) => Promise<unknown>;
+  export default factory;
+}
+
+declare module "*/anisette-js/dist/anisette.js" {
   export class Anisette {
     isProvisioned: boolean;
     static fromSo(
@@ -17,7 +22,7 @@ declare module "@lbr77/anisette-js/dist/anisette.js" {
   }
 }
 
-declare module "@lbr77/anisette-js/dist/http.js" {
+declare module "*/anisette-js/dist/http.js" {
   export interface HttpClient {
     get(url: string, headers: Record<string, string>): Promise<Uint8Array>;
     post(

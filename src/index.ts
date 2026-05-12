@@ -1,11 +1,20 @@
 /// <reference path="./anisette-js-shim.d.ts" />
-// Deep import bypasses @lbr77/anisette-js's main entry (which has a top-level
-// `new URL(import.meta.url)` side effect via wasm-loader.js that crashes on Workers).
-// The package's "exports" map does not expose these — see src/anisette-js-shim.d.ts.
-import { Anisette } from "@lbr77/anisette-js/dist/anisette.js";
-import type { HttpClient } from "@lbr77/anisette-js/dist/http.js";
-// @ts-expect-error — Emscripten generated module, no types ship with the package
-import RawModuleFactory from "@lbr77/anisette-js/dist/anisette_rs.js";
+// Relative path bypasses @lbr77/anisette-js's "exports" map (which only exposes
+// the package entry — that entry has a top-level `new URL(import.meta.url)`
+// side effect via wasm-loader.js that crashes on Cloudflare Workers).
+// At publish time this file is bundled into dist/index.js with the upstream
+// modules inlined, so consumers never resolve the relative path themselves.
+import { Anisette } from "../node_modules/@lbr77/anisette-js/dist/anisette.js";
+import RawModuleFactory from "../node_modules/@lbr77/anisette-js/dist/anisette_rs.js";
+
+export interface HttpClient {
+  get(url: string, headers: Record<string, string>): Promise<Uint8Array>;
+  post(
+    url: string,
+    body: string,
+    headers: Record<string, string>,
+  ): Promise<Uint8Array>;
+}
 
 const ModuleFactory = RawModuleFactory as (
   overrides?: Record<string, unknown>,
